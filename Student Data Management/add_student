@@ -1,0 +1,117 @@
+<?php
+
+$servername = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'my_db';
+
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+if(!$conn){
+	die("Connection Failed..". mysqli_error());
+}
+
+if (isset($_POST['submit'])) {
+	$sql = "CREATE DATABASE IF NOT EXISTS my_db;";
+	if (mysqli_query($conn, $sql)) {
+		$dbname = 'my_db';
+		// echo "Database created successfully !!</br>";
+	}
+
+	$dbname = 'my_db';
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	if(!$conn){
+		die("Connection Failed !!" . mysqli_error());
+	}
+
+	$sql1 = "CREATE TABLE IF NOT EXISTS student_p(name VARCHAR(50), age INT(10), enroll_no INT(10), city VARCHAR(50));";
+	if(mysqli_query($conn, $sql1)){
+		// echo "Table Created !! </br>";
+	}
+
+	$name = $_POST['name'];
+	$age = $_POST['age'];
+	$enroll_no = $_POST['enroll_no'];
+	$city = $_POST['city'];
+
+	$sql2 = "INSERT INTO `student_p` (name, age, enroll_no , city) VALUES ('$name', '$age', '$enroll_no', '$city');";
+
+	if (mysqli_query($conn, $sql2)) {
+		echo "New Record added successfully !!";
+	}else{
+		echo "Record Not added !!";
+	}
+
+	mysqli_close($conn);
+}
+
+if (isset($_POST['update'])) {
+	$dbname = 'my_db';
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	if(!$conn){
+		die("Connection Failed !!" . mysqli_error());
+	}
+
+	$name = $_POST['name'];
+	$age = $_POST['age'];
+	$enroll_no = $_POST['enroll_no'];
+	$city = $_POST['city'];
+
+	$sql3 = "UPDATE student_p SET age='$age', name='$name', city='$city' WHERE enroll_no = '$enroll_no';";
+
+	if(mysqli_query($conn, $sql3)){
+		echo "Record named '". $enroll_no . "' updated successfully !!";
+	}
+
+	mysqli_close($conn);
+	
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Person Details</title>
+	<style>
+		.formdiv{
+			width: 20%;
+			padding: 10px 10px;
+			margin: 50px auto;
+			border: 2px solid black;
+		}
+		.form label,input{
+			margin: 10px 0px;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="formdiv">
+		<h1>Student Data</h1>
+		<form class="form" action="add_student.php" method="POST">
+			<label for="enroll_no">Enroll No: </label>
+			<input type="text" id="enroll_no" name="enroll_no" placeholder="Enter Enroll No." required>
+			<br>
+			<label for="name">Name: </label>
+			<input type="text" id="name" name="name" placeholder="Enter your name">
+			<br>
+			<label for="age">Age: </label>
+			<input type="text" id="age" name="age" placeholder="Enter Age">
+			<br>
+			<label for="city">City: </label>
+			<input type="text" id="city" name="city" placeholder="Enter city">
+			<br>
+			<a href="student.php">Show Students</a>
+			<br><br>
+			<button type="submit" name="submit">Submit</button>
+			<button type="submit" name="update">Update</button>
+			<button type="reset" name="reset">Reset</button>
+		</form>
+	</div>
+
+</body>
+</html>
